@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b6cff" />
+  <meta name="description" content="ROD Assistant - consulta, valida y avanza desde celular, tablet o laptop." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/rod-icon.svg" />
+  <link rel="apple-touch-icon" href="./icons/rod-icon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>ROD Assistant</title>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <button class="brand" id="brandBtn" type="button" aria-label="Volver al inicio">
+        <span class="mini-mascot" aria-hidden="true"><i></i><b></b><b></b></span>
+        <span><small>ROD ASSISTANT</small><strong>ROD</strong></span>
+      </button>
+      <div class="top-actions">
+        <span class="status-pill" id="apiStatus">Demo listo</span>
+        <button class="icon-btn" id="installTopBtn" type="button" title="Instalar ROD">⬇</button>
+        <button class="icon-btn" id="settingsBtn" type="button" title="Configuración">⚙</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view active" id="view-onboarding">
+        <div class="onboarding-wrap">
+          <div class="mascot-stage">
+            <div class="mascot-xl speaking" aria-label="ROD, asistente digital">
+              <div class="antenna"></div>
+              <div class="screen-face"><span></span><span></span><em></em></div>
+              <div class="body-mark">R</div>
+            </div>
+            <span class="signal s1"></span><span class="signal s2"></span>
+          </div>
+          <p class="eyebrow">UN ROD EN TU DÍA</p>
+          <h1>Hola 👋 Soy ROD.</h1>
+          <p class="lead">Estoy aquí para ayudarte a <b>resolver, validar y avanzar</b>. No tienes que aprender a usarme: puedes hablarme, escribir o tocar una opción.</p>
+
+          <div class="intro-card">
+            <div class="rod-line"><span>ROD</span><p>Antes de empezar, ¿cómo quieres que te llame?</p></div>
+            <label class="field"><span>Tu nombre</span><input id="userName" maxlength="30" placeholder="Escribe tu nombre" value="" autocomplete="name" /></label>
+            <button class="primary big" id="activateBtn" type="button">Empezar con ROD ✦</button>
+          </div>
+          <p class="privacy-note">ROD guarda tu nombre solo en este dispositivo para personalizar la experiencia.</p>
+        </div>
+      </section>
+
+      <section class="view" id="view-home">
+        <div class="home-grid">
+          <div class="home-main">
+            <div class="welcome-card">
+              <div class="mascot-md"><div class="antenna"></div><div class="screen-face"><span></span><span></span><em></em></div></div>
+              <div><small>ROD</small><h2 id="welcomeTitle">¿Qué necesitas hoy?</h2><p id="welcomeText">Puedes tocar una opción o pedírmelo directamente.</p></div>
+            </div>
+
+            <div class="quick-command">
+              <button id="voiceBtn" class="voice-orb" type="button" aria-label="Hablar con ROD">🎙</button>
+              <div class="command-input-wrap"><input id="commandInput" placeholder="Ej. ROD, consulta RUC 20511233527" autocomplete="off" /><button id="commandSend" type="button">Enviar</button></div>
+            </div>
+            <div class="voice-state" id="voiceState">Toca el micrófono o escribe lo que necesitas.</div>
+
+            <div class="suggestions" aria-label="Ejemplos de comandos">
+              <button class="suggestion" data-command="ROD, quiero consultar un RUC" type="button">“Consultar un RUC”</button>
+              <button class="suggestion" data-command="Quiero validar un DNI y un nombre" type="button">“Validar DNI + nombre”</button>
+              <button class="suggestion" data-command="Quiero revisar un comprobante" type="button">“Revisar comprobante”</button>
+              <button class="suggestion" data-command="Tengo un archivo 4D" type="button">“Tengo un 4D”</button>
+            </div>
+
+            <div class="section-title"><div><small>HABILIDADES DE ROD</small><h3>¿Qué quieres hacer?</h3></div></div>
+            <div class="tool-grid" id="toolGrid">
+              <button class="tool-card" data-flow="ruc" type="button"><span>🏢</span><strong>Consultar RUC</strong><small>Datos SUNAT y representantes bajo demanda</small></button>
+              <button class="tool-card" data-flow="dni" type="button"><span>🪪</span><strong>Identidad</strong><small>Consultar DNI o validar DNI + nombres</small></button>
+              <button class="tool-card" data-flow="cpe" type="button"><span>🧾</span><strong>Comprobante</strong><small>Factura, boleta o recibo por honorarios</small></button>
+              <button class="tool-card" data-flow="pj" type="button"><span>⚖️</span><strong>Poder Judicial</strong><small>Consulta asistida con login manual</small></button>
+              <button class="tool-card" data-flow="4b" type="button"><span>📊</span><strong>Anexo 4B</strong><small>Validación integral de aportantes</small></button>
+              <button class="tool-card" data-flow="4d" type="button"><span>📑</span><strong>Anexo 4D</strong><small>Proveedor + CPE + datos + PJ</small></button>
+            </div>
+          </div>
+
+          <aside class="home-side">
+            <div class="install-card" id="installCard">
+              <div class="install-icon">📲</div>
+              <div><strong>Ten a ROD siempre contigo</strong><p>Puedes seguir usando la web o instalar ROD como app en este dispositivo.</p></div>
+              <div class="install-actions"><button class="primary" id="installBtn" type="button">Instalar ROD</button><button class="ghost" id="dismissInstallBtn" type="button">Seguir en web</button></div>
+            </div>
+            <div class="mini-panel"><small>MODO ACTUAL</small><strong id="modeLabel">Demo interactivo</strong><p id="modeHelp">Puedes recorrer la experiencia sin configurar credenciales.</p></div>
+            <div class="mini-panel"><small>DISPOSITIVO</small><strong id="deviceLabel">Detectando…</strong><p id="deviceHelp">ROD adapta los controles automáticamente.</p></div>
+            <div class="mini-panel rod-promise"><small>IDEA ROD</small><strong>Menos pasos. Más resultado.</strong><p>La parte técnica se queda detrás; tú ves lo que necesitas para continuar.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-flow">
+        <div class="flow-shell">
+          <div class="flow-head">
+            <button class="back-btn" id="backBtn" type="button" aria-label="Volver">←</button>
+            <div class="flow-head-center"><small id="flowLabel">ROD ESTÁ CONTIGO</small><strong id="flowTitle">Consulta</strong><div class="progress"><i id="progressBar"></i></div></div>
+            <button class="icon-btn" id="flowVoiceBtn" type="button" title="Hablar con ROD">🎙</button>
+          </div>
+          <div class="chat" id="chat" aria-live="polite"></div>
+          <div class="action-zone" id="actionZone"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="settings-wrap">
+          <div class="settings-head"><button class="back-btn" id="settingsBackBtn" type="button">←</button><div><small>ROD ASSISTANT</small><h2>Configuración</h2></div></div>
+          <div class="setting-card"><div class="fixed-rod"><div class="mascot-md"><div class="antenna"></div><div class="screen-face"><span></span><span></span><em></em></div></div><div><small>ASISTENTE</small><strong>ROD</strong><p>El nombre de la mascota es parte de la marca.</p></div></div><label class="field"><span>Cómo quieres que ROD te llame</span><input id="settingsUser" /></label><button class="primary" id="saveSettingsBtn" type="button">Guardar cambios</button></div>
+          <div class="setting-card row-setting"><div><strong>Voz de ROD</strong><p>ROD puede leer mensajes y escuchar comandos cuando el navegador lo permita.</p></div><label class="switch"><input id="ttsToggle" type="checkbox" checked /><span></span></label></div>
+          <div class="setting-card"><strong>Conexión</strong><p id="apiConfigText">Modo demo. Para conectar consultas reales configura API_BASE en config.js.</p><button class="ghost" id="testApiBtn" type="button">Probar conexión</button></div>
+          <div class="setting-card danger"><strong>Reiniciar experiencia</strong><p>Borra el nombre guardado y vuelve a la presentación de ROD.</p><button class="ghost" id="resetBtn" type="button">Reiniciar</button></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+    <div class="sheet-backdrop" id="sheetBackdrop"></div>
+    <div class="bottom-sheet" id="installSheet" aria-hidden="true">
+      <div class="sheet-handle"></div>
+      <div class="install-rod-head"><div class="mini-mascot"><i></i><b></b><b></b></div><div><small>ROD ASSISTANT</small><h3>¿Quieres tenerme como app?</h3></div></div>
+      <p id="installInstructions">Puedes seguir usando ROD aquí o instalarlo en este dispositivo.</p>
+      <button class="primary big" id="installSheetAction" type="button">📲 Instalar ROD</button>
+      <button class="ghost big" id="installSheetClose" type="button">🌐 Seguir usando la web</button>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
