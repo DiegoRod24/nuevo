@@ -1,0 +1,13 @@
+{
+  "name": "ROD Assistant",
+  "short_name": "ROD",
+  "description": "Tu asistente para resolver, validar y avanzar.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06101d",
+  "theme_color": "#0b6cff",
+  "orientation": "any",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [{"src":"./rod-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
