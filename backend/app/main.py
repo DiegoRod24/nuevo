@@ -3,18 +3,22 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from app.config import settings
 from app.services.batch import inspect_excel
 from app.services.factiliza import FactilizaClient
+from app.services.massive import output_path as massive_output_path
+from app.services.massive import status as massive_status
+from app.services.massive import submit as submit_massive
 from app.services.pj import prepare as pj_prepare, status as pj_status
 from app.services.sunat_cpe import SunatCPEClient
 from app.services.sunat_web import SunatWebClient
 
-app = FastAPI(title="ROD API", version="0.2.0", description="Backend privado de ROD Assistant")
+app = FastAPI(title="ROD API", version="0.3.0", description="Backend privado de ROD Assistant")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(settings.cors_origins) or ["*"],
@@ -58,12 +62,12 @@ class PJRequest(BaseModel):
 
 @app.get("/")
 def root() -> Dict[str, Any]:
-    return {"ok": True, "service": "ROD API", "version": "0.2.0"}
+    return {"ok": True, "service": "ROD API", "version": "0.3.0"}
 
 
 @app.get("/api/health")
 def health() -> Dict[str, Any]:
-    return {"ok": True, "environment": settings.app_env, "demo_fallback": settings.demo_fallback}
+    return {"ok": True, "environment": settings.app_env, "demo_fallback": settings.demo_fallback, "version": "0.3.0"}
 
 
 @app.get("/api/health/services")
@@ -79,8 +83,8 @@ def services_health() -> Dict[str, Any]:
             "sunat_cpe": {"configured": c_ok, "mode": "API", "detail": c_msg},
             "sunat_web": {"configured": sw_ok, "mode": "HEADLESS_WEB", "detail": sw_msg},
             "pj": {"configured": pj["configured"], "mode": "ASSISTED", "detail": pj["message"]},
-            "batch_4b": {"configured": True, "mode": "PREVALIDATION_READY", "detail": "Preparado para motor integral 4B"},
-            "batch_4d": {"configured": True, "mode": "PREVALIDATION_READY", "detail": "Preparado para motor integral 4D"},
+            "batch_4b": {"configured": True, "mode": "REAL_MASSIVE", "detail": "Excel masivo: DNI + RUC + observados + cola PJ"},
+            "batch_4d": {"configured": True, "mode": "REAL_MASSIVE", "detail": "Excel masivo: proveedor + CPE + observados + cola PJ"},
         },
     }
 
@@ -140,3 +144,49 @@ async def batch_4b(file: UploadFile = File(...)) -> Dict[str, Any]:
 async def batch_4d(file: UploadFile = File(...)) -> Dict[str, Any]:
     content = await file.read()
     return inspect_excel(content, file.filename or "anexo4d.xlsx", "4D")
+
+
+@app.post("/api/jobs/massive")
+async def massive_job(
+    file: UploadFile = File(...),
+    mode: str = Query("AUTO"),
+    dni: bool = Query(True),
+    ruc: bool = Query(True),
+    cpe: bool = Query(True),
+    representatives: bool = Query(False),
+    pj_queue: bool = Query(True),
+) -> Dict[str, Any]:
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="El archivo está vacío")
+    return submit_massive(
+        content=content,
+        filename=file.filename or "consulta_masiva.xlsx",
+        mode=mode,
+        use_dni=dni,
+        use_ruc=ruc,
+        use_cpe=cpe,
+        use_reps=representatives,
+        pj_queue=pj_queue,
+    )
+
+
+@app.get("/api/jobs/{job_id}")
+def get_massive_job(job_id: str) -> Dict[str, Any]:
+    job = massive_status(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Trabajo no encontrado")
+    return job
+
+
+@app.get("/api/jobs/{job_id}/download")
+def download_massive_job(job_id: str):
+    job = massive_status(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Trabajo no encontrado")
+    if job.get("status") != "DONE":
+        raise HTTPException(status_code=409, detail="El trabajo todavía no terminó")
+    path = massive_output_path(job_id)
+    if not path:
+        raise HTTPException(status_code=404, detail="El archivo de salida ya no está disponible")
+    return FileResponse(path, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=job.get("download_name") or path.name)
