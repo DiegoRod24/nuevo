@@ -1,16 +1,22 @@
-# ROD Assistant
+# ROD Shop
 
-ROD es un asistente web/PWA para consultas y validaciones guiadas de DNI, RUC, comprobantes, Poder Judicial, Anexo 4B y Anexo 4D.
+Versión pública de ROD Shop preparada para Cloudflare Pages.
 
-## Estado público
+La misma tienda está disponible en varias rutas de salida para evitar despliegues en blanco por una configuración distinta de Cloudflare:
 
-Esta publicación usa `DEMO_FALLBACK: true` para poder probar toda la experiencia sin exponer credenciales privadas.
+- `/`
+- `/public`
+- `/dist`
+- `/frontend`
+- `/frontend/public`
+- `/frontend/dist`
 
-## Cloudflare Pages
+## Configuración recomendada de Cloudflare Pages
 
-- Framework preset: None
-- Build command: dejar vacío
-- Build output directory: `/`
-- Root directory: `/`
+- Production branch: `main`
+- Root directory: `frontend`
+- Framework preset: `None`
+- Build command: `exit 0`
+- Build output directory: `.`
 
-La aplicación es estática y puede publicarse directamente desde la rama `main`.
+Si Cloudflare usa otra salida, `public` o `dist` también contienen la misma versión.
