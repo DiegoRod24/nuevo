@@ -1,0 +1,32 @@
+name: ROD CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Compile backend
+        run: |
+          python -m py_compile backend/app/main.py
+          python -m py_compile backend/app/config.py
+          python -m py_compile backend/app/services/factiliza.py
+          python -m py_compile backend/app/services/sunat_cpe.py
+          python -m py_compile backend/app/services/sunat_web.py
+          python -m py_compile backend/app/services/massive.py
+      - name: Validate frontend JavaScript
+        run: |
+          node --check app-core.js
+          node --check app-identity.js
+          node --check app-cpe-pj.js
+          node --check app-batch.js
+          node --check app-init.js
