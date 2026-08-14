@@ -1,40 +1,112 @@
-# ROD Assistant — Centro Inteligente de Consultas y Validación
+# 🤖 ROD Assistant — Centro Inteligente de Consultas y Validación
 
-ROD es una PWA interactiva diseñada como interfaz unificada para consultas y validaciones operativas.
+**Web/PWA:** https://nuevo-cv5.pages.dev/  
+**Repositorio:** https://github.com/DiegoRod24/nuevo
 
-## Módulos incluidos en la demo
+ROD unifica consultas y procesos operativos en una experiencia conversacional: el usuario puede hablar, escribir o tocar una opción, mientras la parte técnica queda detrás.
 
-- DNI individual
+## Servicios de ROD
+
+### Consultas rápidas
+- DNI
 - DNI + nombres
-- RUC individual
+- RUC
 - RUC + razón social
-- Representantes legales
-- Validación de comprobantes (factura, boleta y RH)
-- Poder Judicial individual y masivo con login/captcha manual
+- domicilio y datos SUNAT
+- representantes legales bajo demanda
+- factura, boleta y recibo por honorarios
+- Poder Judicial individual o por lote (asistido)
+
+### Procesos integrales
 - Anexo 4B
 - Anexo 4D
-- Detección automática de tipo de archivo
-- Prevalidación de archivos
-- Procesamiento de varios archivos
-- Comparador declarado vs consultado
-- Reprocesamiento de observados
-- Flujo personalizado
-- Historial y resultados locales
-- Voz, micrófono continuo y animaciones de ROD
-- PWA instalable en celular y laptop
+- detección automática de tipo de Excel
+- prevalidación
+- comparación declarado vs consultado
+- procesamiento múltiple
+- reproceso de observados
+- flujo personalizado
+- historial y resultados
 
-## Estado
+## Arquitectura
 
-La versión pública funciona en modo DEMO para probar la experiencia sin exponer credenciales ni secretos. Los motores reales de SUNAT, Factiliza y Poder Judicial deben conectarse mediante backend privado.
+```text
+Celular / Laptop
+      │
+      ▼
+ROD Assistant · Cloudflare Pages
+      │ HTTPS
+      ▼
+ROD API · FastAPI / Docker
+  ├─ Factiliza · DNI
+  ├─ SUNAT API · comprobantes
+  ├─ SUNAT Web headless · RUC / representantes
+  ├─ Excel · 4B / 4D
+  └─ PJ Bridge · asistido
+```
+
+La web nunca contiene `FACTILIZA_TOKEN`, secretos SUNAT ni credenciales PJ.
+
+## Estado actual
+
+- ✅ PWA/UX de ROD
+- ✅ voz, texto y botones
+- ✅ DNI/Factiliza: adaptador backend real
+- ✅ SUNAT CPE: OAuth + consulta + reintentos
+- ✅ SUNAT Web: RUC/razón social/domicilio/representantes en headless
+- ✅ diagnóstico de motores desde `/api/health/services`
+- ✅ detección/prevalidación de Excel
+- 🟡 4B/4D: prevalidación web lista; el motor integral legacy se conecta en el backend privado
+- 🟡 PJ: preparación lista; la sesión manual/captcha requiere ROD Bridge
+
+## Seguridad
+
+No subas un `.env` real a este repositorio público. Usa `backend/.env.example` como plantilla y carga los valores reales como secrets/variables de entorno del backend. `.gitignore` bloquea `.env`.
+
+Consulta [CONFIGURACION_ENV.md](./CONFIGURACION_ENV.md).
 
 ## Cloudflare Pages
 
-Esta publicación deja los mismos archivos en raíz, `frontend`, `public`, `dist`, `frontend/public` y `frontend/dist` para evitar errores por configuración previa del directorio de salida.
+La PWA funciona desde la raíz y también desde `frontend/` para mantener compatibilidad con la configuración actual.
 
-Recomendado:
+Configuración recomendada:
 
-- Production branch: `main`
-- Framework preset: `None`
-- Root directory: `/`
-- Build command: vacío o `exit 0`
-- Build output directory: `.`
+```text
+Production branch: main
+Framework preset: None
+Root directory: /
+Build command: exit 0
+Build output directory: .
+```
+
+## Backend local
+
+```bash
+cd backend
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+uvicorn app.main:app --reload --port 8000
+```
+
+Luego coloca en `config.js`:
+
+```js
+API_BASE: "http://localhost:8000"
+```
+
+## Endpoints
+
+```text
+GET  /api/health
+GET  /api/health/services
+POST /api/dni
+POST /api/ruc
+POST /api/ruc/representatives
+POST /api/cpe
+POST /api/pj/prepare
+POST /api/files/detect
+POST /api/batch/4b
+POST /api/batch/4d
+```
