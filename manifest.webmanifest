@@ -1,15 +1,13 @@
 {
-  "name": "ROD Assistant — Centro de Validación",
-  "short_name": "ROD",
-  "description": "Tu asistente para consultas, validaciones y procesos 4B, 4D, RUC, DNI, comprobantes y Poder Judicial.",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#06101d",
-  "theme_color": "#07162b",
-  "orientation": "any",
-  "categories": ["productivity", "business", "utilities"],
-  "icons": [
-    {"src":"./rod-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
-  ]
+  "name":"ROD Assistant — Centro Inteligente de Validación",
+  "short_name":"ROD",
+  "description":"Tu mejor amigo para consultar, validar y avanzar.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#06101d",
+  "theme_color":"#07162b",
+  "orientation":"any",
+  "categories":["business","productivity","utilities"],
+  "icons":[{"src":"./rod-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }

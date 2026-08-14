@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: rod-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: ROD_DEMO_FALLBACK
+        value: "false"
+      - key: ROD_CORS_ORIGINS
+        value: https://nuevo-cv5.pages.dev
+      - key: SUNAT_WEB_HEADLESS
+        value: "true"
+      - key: CHROME_BINARY
+        value: /usr/bin/chromium
+      - key: CHROMEDRIVER_PATH
+        value: /usr/bin/chromedriver
+      - key: FACTILIZA_TOKEN
+        sync: false
+      - key: SUNAT_API_RUC_CONSULTANTE
+        sync: false
+      - key: SUNAT_API_CLIENT_ID
+        sync: false
+      - key: SUNAT_API_CLIENT_SECRET
+        sync: false
+      - key: PJ_USUARIO
+        sync: false
+      - key: PJ_CLAVE
+        sync: false
+      - key: PJ_BRIDGE_URL
+        sync: false
