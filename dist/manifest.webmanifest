@@ -1,14 +1,14 @@
 {
-  "name": "ROD Shop",
-  "short_name": "ROD Shop",
-  "description": "Bienestar íntimo, compra discreta y asistencia interactiva con ROD.",
+  "name": "ROD Assistant — Centro de Validación",
+  "short_name": "ROD",
+  "description": "Tu asistente para consultas, validaciones y procesos 4B, 4D, RUC, DNI, comprobantes y Poder Judicial.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0710",
-  "theme_color": "#1a1020",
+  "background_color": "#06101d",
+  "theme_color": "#07162b",
   "orientation": "any",
-  "categories": ["shopping", "lifestyle"],
+  "categories": ["productivity", "business", "utilities"],
   "icons": [
     {"src":"./rod-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
